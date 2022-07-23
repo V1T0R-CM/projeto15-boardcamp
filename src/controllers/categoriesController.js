@@ -9,7 +9,6 @@ export async function postCategories(req, res){
 }
 
 export async function getCategories(req, res){
-    console.log(req.body.name)
     const { rows: categories } = await connection.query(`SELECT * FROM categories`);
     
     return res.status(200).send(categories)
