@@ -1,7 +1,7 @@
 import connection from "../db/database.js";
 import costumersSchemas from "../schemas/customersSchemas.js";
 
-export async function postCustomersValidation(req, res, next){
+export async function customersValidation(req, res, next){
     let date1 = /(\d{4})[-.\/](\d{2})[-.\/](\d{2})/;
     let date2 = /(\d{2})[-.\/](\d{2})[-.\/](\d{4})/;
     const validation = costumersSchemas.validate(req.body);
@@ -10,7 +10,7 @@ export async function postCustomersValidation(req, res, next){
         return res.sendStatus(400)
     }
     
-    if(req.body.cpf.length!==11 && isNaN(eq.body.cpf)){
+    if(req.body.cpf.length!==11 && !isNaN(req.body.cpf)){
         return res.sendStatus(400)
     }
 
@@ -21,7 +21,20 @@ export async function postCustomersValidation(req, res, next){
     if(!date1.test(req.body.birthday) && !date2.test(req.body.birthday)){
         return res.sendStatus(400)
     }
+
     const { rows: costumers} = await connection.query(`SELECT * FROM customers WHERE cpf = '${req.body.cpf}'`);
+
+    
+    if(req.params.id){
+        const { rows: costumerCpf } = await connection.query(`SELECT cpf FROM customers WHERE id = '${req.params.id}'`);
+        if(costumerCpf.length===0){
+            return res.sendStatus(400)
+        }
+
+        else if (costumers.length===1 && costumerCpf[0].cpf!==costumers[0].cpf){
+            return res.sendStatus(409)
+        }
+    }
 
     if(costumers.length>0){
         return res.sendStatus(409)

@@ -8,3 +8,12 @@ export async function postCustomers(req, res){
     );
     return res.sendStatus(201);
 }
+
+export async function putCustomers(req, res){
+    await connection.query(
+        `UPDATE customers 
+        SET name = '${req.body.name}', phone = '${req.body.phone}', cpf = '${req.body.cpf}', birthday = '${req.body.birthday}'
+        WHERE id = ${req.params.id}`
+    );
+    return res.sendStatus(201);
+}
