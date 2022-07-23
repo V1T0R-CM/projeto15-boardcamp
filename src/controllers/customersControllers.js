@@ -1,5 +1,31 @@
 import connection from "../db/database.js";
 
+export async function getCustomers(req, res){
+    if(req.params.id){
+        console.log("foi até aqui")
+        const { rows: customersByID}=await connection.query(
+            `SELECT * FROM customers WHERE id = '${req.params.id}'`
+        );
+
+        if(customersByID.length===0){
+            return res.sendStatus(404)
+        }
+
+        return res.status(200).send(customersByID)
+    }
+
+    const { rows: customers }=await connection.query(
+        `SELECT * FROM customers`
+    );
+
+    const searchFilter = req.query.cpf;
+
+    if(searchFilter){
+        return res.status(200).send(customers.filter(customers => customers.cpf.slice(0,searchFilter.length)=== searchFilter))
+    }
+    return res.status(200).send(customers)
+    
+}
 
 export async function postCustomers(req, res){
     await connection.query(

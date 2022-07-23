@@ -22,7 +22,7 @@ export async function customersValidation(req, res, next){
         return res.sendStatus(400)
     }
 
-    const { rows: costumers} = await connection.query(`SELECT * FROM customers WHERE cpf = '${req.body.cpf}'`);
+    const { rows: customers} = await connection.query(`SELECT * FROM customers WHERE cpf = '${req.body.cpf}'`);
 
     
     if(req.params.id){
@@ -31,7 +31,7 @@ export async function customersValidation(req, res, next){
             return res.sendStatus(400)
         }
 
-        else if (costumers.length===1 && costumerCpf[0].cpf!==costumers[0].cpf){
+        else if (customers.length===1 && costumerCpf[0].cpf!==customers[0].cpf){
             return res.sendStatus(409)
         }
     }
