@@ -38,3 +38,12 @@ export async function postEndRental(req, res){
 
     return res.sendStatus(200);
 }
+
+export async function deleteRental(req, res){
+    await connection.query(
+        `DELETE FROM rentals 
+        WHERE id = ${req.params.id}`
+    );
+
+    return res.sendStatus(200);
+}
