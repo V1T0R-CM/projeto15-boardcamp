@@ -26,3 +26,16 @@ export async function postRentalsValidation(req, res, next){
     }
     next();
 }
+
+export async function postEndRentalValidation(req, res, next){
+    const { rows: rental} = await connection.query(`SELECT * FROM rentals WHERE id = '${req.params.id}'`);
+    
+    if(rental.length===0){
+        return res.sendStatus(400);
+    }
+
+    if(rental[0].returnDate){
+        return res.sendStatus(400);
+    }
+    next()
+}
