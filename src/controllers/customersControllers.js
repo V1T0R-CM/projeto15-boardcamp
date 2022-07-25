@@ -1,6 +1,11 @@
 import connection from "../db/database.js";
 
 export async function getCustomers(req, res){
+    const { rows: customers }=await connection.query(
+        `SELECT * FROM customers`
+    );
+
+
     if(req.params.id){
         const { rows: customersByID}=await connection.query(
             `SELECT * FROM customers WHERE id = '${req.params.id}'`
@@ -13,15 +18,12 @@ export async function getCustomers(req, res){
         return res.status(200).send(customersByID)
     }
 
-    const { rows: customers }=await connection.query(
-        `SELECT * FROM customers`
-    );
-
     const searchFilter = req.query.cpf;
 
     if(searchFilter){
         return res.status(200).send(customers.filter(customers => customers.cpf.slice(0,searchFilter.length)=== searchFilter))
     }
+    
     return res.status(200).send(customers)
     
 }
@@ -31,6 +33,7 @@ export async function postCustomers(req, res){
         `INSERT INTO customers(name, phone, cpf, birthday) 
         VALUES ('${req.body.name}', '${req.body.phone}', '${req.body.cpf}', '${req.body.birthday}')`
     );
+
     return res.sendStatus(201);
 }
 
@@ -40,5 +43,6 @@ export async function putCustomers(req, res){
         SET name = '${req.body.name}', phone = '${req.body.phone}', cpf = '${req.body.cpf}', birthday = '${req.body.birthday}'
         WHERE id = ${req.params.id}`
     );
+
     return res.sendStatus(201);
 }

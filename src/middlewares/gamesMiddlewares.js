@@ -9,6 +9,9 @@ export async function postGamesValidation(req, res, next){
     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
     '(\\?[;&a-z\\d%_.~+=-]*)?' +
     '(\\#[-a-z\\d_]*)?$', 'i')
+    
+    const { rows: category} = await connection.query(`SELECT * FROM categories WHERE id = '${req.body.categoryId}'`);
+    const { rows: game} = await connection.query(`SELECT * FROM games WHERE name = '${req.body.name}'`);
 
     if(validation.error){
         return res.sendStatus(400)
@@ -26,13 +29,9 @@ export async function postGamesValidation(req, res, next){
         return res.sendStatus(400)
     }
     
-    const { rows: category} = await connection.query(`SELECT * FROM categories WHERE id = '${req.body.categoryId}'`);
-    
     if(category.length===0){
         return res.sendStatus(409)
     }
-
-    const { rows: game} = await connection.query(`SELECT * FROM games WHERE name = '${req.body.name}'`);
 
     if(game.length>0){
         return res.sendStatus(409)

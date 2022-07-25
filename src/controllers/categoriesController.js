@@ -5,6 +5,7 @@ export async function postCategories(req, res){
         `INSERT INTO categories (name) 
           VALUES ('${req.body.name}')`
     );
+    
     return res.sendStatus(201)
 }
 

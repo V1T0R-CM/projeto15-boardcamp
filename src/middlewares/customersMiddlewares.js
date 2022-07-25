@@ -5,6 +5,7 @@ export async function customersValidation(req, res, next){
     let date1 = /(\d{4})[-.\/](\d{2})[-.\/](\d{2})/;
     let date2 = /(\d{2})[-.\/](\d{2})[-.\/](\d{4})/;
     const validation = customersSchemas.validate(req.body);
+    const { rows: customers} = await connection.query(`SELECT * FROM customers WHERE cpf = '${req.body.cpf}'`);
 
     if(validation.error){
         return res.sendStatus(400)
@@ -21,9 +22,6 @@ export async function customersValidation(req, res, next){
     if(!date1.test(req.body.birthday) && !date2.test(req.body.birthday)){
         return res.sendStatus(400)
     }
-
-    const { rows: customers} = await connection.query(`SELECT * FROM customers WHERE cpf = '${req.body.cpf}'`);
-
     
     if(req.params.id){
         const { rows: costumerCpf } = await connection.query(`SELECT cpf FROM customers WHERE id = '${req.params.id}'`);
