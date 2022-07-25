@@ -1,10 +1,10 @@
 import connection from "../db/database.js";
-import costumersSchemas from "../schemas/customersSchemas.js";
+import customersSchemas from "../schemas/customersSchemas.js";
 
 export async function customersValidation(req, res, next){
     let date1 = /(\d{4})[-.\/](\d{2})[-.\/](\d{2})/;
     let date2 = /(\d{2})[-.\/](\d{2})[-.\/](\d{4})/;
-    const validation = costumersSchemas.validate(req.body);
+    const validation = customersSchemas.validate(req.body);
 
     if(validation.error){
         return res.sendStatus(400)
@@ -36,7 +36,7 @@ export async function customersValidation(req, res, next){
         }
     }
 
-    if(costumers.length>0){
+    if(customers.length>0){
         return res.sendStatus(409)
     }
 

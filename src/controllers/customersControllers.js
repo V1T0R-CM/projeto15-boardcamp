@@ -2,7 +2,6 @@ import connection from "../db/database.js";
 
 export async function getCustomers(req, res){
     if(req.params.id){
-        console.log("foi até aqui")
         const { rows: customersByID}=await connection.query(
             `SELECT * FROM customers WHERE id = '${req.params.id}'`
         );
