@@ -1,6 +1,31 @@
 import connection from "../db/database.js";
 import dayjs from "dayjs";
 
+
+export async function getRentals(req, res){
+    const { rows: rentals} = await connection.query(`SELECT * FROM rentals`);
+    const { rows: customers} = await connection.query(`SELECT id, name FROM customers`);
+    const { rows: games} = await connection.query(`SELECT games.id, games.name, games."categoryId", categories.name as categoryName FROM games
+    JOIN categories ON games."categoryId" = categories.id`);
+    
+    const rentalsSumary = rentals.map(rental=>{
+        let customer = customers.filter(customer => customer.id === rental.customerId)
+        let game = games.filter(game => game.id === rental.gameId)
+        return {...rental, customer: customer[0], game: game[0]}
+    });
+
+
+    if(req.query.customerId){
+        return res.status(200).send(rentalsSumary.filter(rental=>rental.customerId === Number(req.query.customerId)));
+    }
+
+    if(req.query.gameId){
+        return res.status(200).send(rentalsSumary.filter(rental=>rental.gameId === Number(req.query.gameId)));
+    }
+
+    return res.status(200).send(rentalsSumary);
+}
+
 export async function postRentals(req, res){
     const { rows: game} = await connection.query(`SELECT * FROM games WHERE id = '${req.body.gameId}'`);
     
